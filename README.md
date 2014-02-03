@@ -12,7 +12,5 @@ degrees are saved for later analysis.
 
 
 Files:
-
-cluster.py: Building of networks and various calculations.
-
-plotter.py: Uses output from cluster.py to produce figures.
+- cluster.py: Building of networks and various calculations.
+- plotter.py: Uses output from cluster.py to produce figures.
