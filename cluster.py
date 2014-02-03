@@ -7,13 +7,14 @@ import matplotlib.mlab as mlab
 from scipy.sparse import csr_matrix, dia_matrix
 from scipy.sparse.linalg import eigsh
 
-# A variation of cluster-easy.py which calculates clustering coefficients for
-# very large networks. With n = 1e6 it uses about 11.5 GB RAM. On one core 3.4
-# GHz it takes about 1.5 hours to complete with 100 realisations and 1e6 nodes.
-# It also saves average node degrees for each network averaged over all runs.
+# This script calculates clustering coefficients for very large networks.
+# With n # = 1e6 it uses about 11.5 GB RAM. On one core 3.4 GHz it takes about
+# 1.5 hours to complete with 100 realisations and 1e6 nodes. It also saves
+# average node degrees for each network averaged over all runs.
 
 runs = 100   # Number of realizations
 
+# Some useful functions
 def where(n):
     return np.ones(len(n))
 
@@ -45,6 +46,9 @@ def ki(i,M):
     return M.sum(0)[0,i]
 
 
+# Here we build a network, calculate the clustering coefficients and the node
+# degrees. This is repeated "runs" times for each of the network sizes specified
+# in the outer loop.
 mins = []
 maxs = []
 means = []
@@ -144,20 +148,6 @@ for n in [10,100,1000,10000,100000,1000000]:
 mins = np.abs(np.subtract(mins,means))
 maxs = np.subtract(maxs,means)
 
-"""
-Save data to file for later plotting.
-"""
+# Save data to file for later plotting.
 np.savetxt('such_result_'+str(runs)+'_realisations',[mins,maxs,means])
 np.savez('node_degrees',k=kk)
-
-# Plotting
-#x = [10,100,1000,10000,100000,1000000]
-#fig,ax = plt.subplots(1,1,1)
-#ax.errorbar(x,means,[mins,maxs],xerr=None,marker='s',fmt='.')
-#ax.set_xlim(9, 1100000)
-#ax.set_xscale('log')
-#plt.xlabel('Nodes added to the original network')
-#plt.ylabel('Clustering coefficient')
-#plt.title('Clustering coefficient versus network growth')
-#plt.show()
-#plt.savefig('wow.png')
