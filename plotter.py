@@ -4,25 +4,19 @@ import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 from scipy import optimize
 
-# Functions for fitting the degree distribution
-def fitfunc(p,x):
-    return p[0] + p[1] * x ** (p[2])
-def errfunc(p,x,y):
-    return (y - fitfunc(p, x))
-
 # Loading some data
 data = np.loadtxt('such_result_100_realisations')
-k = np.load('node_degrees.npz')['k']
+k = np.load('avk.npz')['k']
 mins = data[0]
 maxs = data[1]
 means = data[2]
 
 # Plotting of error bars
 x = [10,100,1000,10000,100000,1000000]
-fig,ax = plt.subplots(1,1,1)
+fig,ax = plt.subplots()
 ax.errorbar(x,means,[mins,maxs],xerr=None,marker='s',fmt='.')
 ax.set_xlim(7, 2000000)
-ax.set_ylim(.65,.775)
+ax.set_ylim(.99*(means[0]-mins[0]),1.01*(means[0]+maxs[0]))
 ax.set_xscale('log')
 plt.xlabel('Nodes added to the original network')
 plt.ylabel('Clustering coefficient')
@@ -31,28 +25,30 @@ ax.annotate(r'C = '+str("%.5f"% means[-1])+' ('+str("%.5f"% mins[-1])+', '
 +str("%.5f"% maxs[-1])+')', xy=(1e6,.739), xytext=(1e3, .76),
 arrowprops=dict(facecolor='black', shrink=0.1,width=2))
 
-# Calculation of degree distributions
-top = np.max(k)
-H = np.zeros((len(k),top))
-bins = np.linspace(0,top+1,top+2)
-for i in range(len(k)):
-    H[i],bins = np.histogram(k[i],bins)
-k = np.mean(H,0)    # Averaging over the histograms for all realisations
-
 # Polynomial fitting to the averaged degree distribution
+top = len(k)
+bins = np.linspace(0,top,top)
 
-# Below here needs fixing!
 xdata = bins
 ydata = k
 
-def func(a,x,b):
-    return a*x**b
+plt.figure()
+def func(a,b,c,x):
+    return a+b*x**c
 
-opt,cov = optimize.curve_fit(func,xdata,ydata)
+opt,cov = optimize.curve_fit(func,xdata,ydata,p0=[0,0,-3])
+a=opt[0]
+b=opt[1]
+c=opt[2]
 
+def ys(x):
+    return 1e7*x**-3
 
-
-# plot degree distribution on a log-log scale
+plt.loglog(xdata,ydata)
+plt.loglog(xdata[:1e3],ys(xdata)[:1e3])
+plt.legend(('Degree distribution',r'$k^{-3}$'),loc="best")
+plt.title(r'Degree distribution of a network with $10^6$nodes')
+plt.xlabel('Node degree')
+plt.ylabel('Number of nodes')
 
 plt.show()
-#plt.savefig('wow.png')
