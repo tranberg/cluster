@@ -27,26 +27,27 @@ arrowprops=dict(facecolor='black', shrink=0.1,width=2))
 
 # Polynomial fitting to the averaged degree distribution
 top = len(k)
-bins = np.linspace(0,top,top)
+bins = np.linspace(1,top,top)
 
 xdata = bins
 ydata = k
 
 plt.figure()
-def func(a,b,c,x):
-    return a+b*x**c
+def func(x,a,b):
+    return a*(x**b)
 
-opt,cov = optimize.curve_fit(func,xdata,ydata,p0=[0,0,-3])
+opt,cov = optimize.curve_fit(func,xdata[10:100],ydata[10:100],p0=[1e7,-3])
 a=opt[0]
 b=opt[1]
-c=opt[2]
 
 def ys(x):
     return 1e7*x**-3
 
-plt.loglog(xdata,ydata)
+par = r'$\sim$'+r'$k^{'+str("%.3f"% b)+r'}$'
+plt.loglog(xdata,ydata,'-')
 plt.loglog(xdata[:1e3],ys(xdata)[:1e3])
-plt.legend(('Degree distribution',r'$k^{-3}$'),loc="best")
+plt.loglog(xdata[:1e3],func(xdata,a,b)[:1e3],'-')
+plt.legend(('Degree distribution',r'$k^{-3}$','Fit: '+par),loc="best")
 plt.title(r'Degree distribution of a network with $10^6$nodes')
 plt.xlabel('Node degree')
 plt.ylabel('Number of nodes')
