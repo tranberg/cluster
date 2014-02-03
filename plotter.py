@@ -36,7 +36,7 @@ plt.figure()
 def func(x,a,b):
     return a*(x**b)
 
-opt,cov = optimize.curve_fit(func,xdata[10:100],ydata[10:100],p0=[1e7,-3])
+opt,cov = optimize.curve_fit(func,xdata[20:500],ydata[20:500],p0=[1e7,-3])
 a=opt[0]
 b=opt[1]
 
