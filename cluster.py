@@ -148,6 +148,15 @@ for n in [10,100,1000,10000,100000,1000000]:
 mins = np.abs(np.subtract(mins,means))
 maxs = np.subtract(maxs,means)
 
+# Averaging over all realisations in order to obtain an average degree
+# distribution.
+top = np.max(kk)
+H = np.zeros((len(kk),top))
+bins = np.linspace(0,top+1,top+1)
+for i in range(len(kk)):
+    H[i],bins = np.histogram(kk[i],bins)
+k = np.mean(H,0)
+
 # Save data to file for later plotting.
 np.savetxt('such_result_'+str(runs)+'_realisations',[mins,maxs,means])
-np.savez('node_degrees',k=kk)
+np.savez('avk',k=k)
