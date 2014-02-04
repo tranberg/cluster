@@ -58,16 +58,17 @@ for n in [10,100,1000,10000,100000,1000000]:
     print 'Building network with',n,'nodes.'
     for k in range(runs):
         print 'Run',k+1,'of',str(runs)
+        
         # Initial network
         irow = [0,0,1]
         icol = [1,2,2]
-        # Adding nodes
 
+        # Adding nodes
         row,col,data=[],[],[]
         row,col = add(irow,icol,n)
         data = where(row)
 
-        CC = []
+        # Building the complete adjacency matrix
         j = int(2*(n+2)-1)
         nodes = 3+(j-3)/2
         tdata = np.concatenate((data[:j],data[:j]))
@@ -75,71 +76,23 @@ for n in [10,100,1000,10000,100000,1000000]:
         tcol = np.concatenate((col[:j],row[:j]))
         A = csr_matrix((tdata,([trow,tcol])))
         
-        """
-        This could be redone to save memory:
-        In stead of building entire A, just build the upper triangle of A, call
-        it a, then do c=a*a'*a. c.diagonal() is the equivalent to C.diagonal()
-        further down.
-        """
-
         print 'Done building A'
-        """
-        Here we should do the following:
-        Keep A in memory.
-        Calculate AA=A*A and keeping thins in memory
-        We now calculate the diagonal of AAA=AA*A one element at a time and
-        saving these elements in a file. This should save usage of RAM.
-        We now have C
-        When this works the code should be altered to support several CPU-cores
-        """
-    
-        """
-        Here is a failed attempt
-        vals,P = eigsh(A,n-1)
-        B = dia_matrix((vals,0),shape=(n-1,n-1),dtype=np.uint8)
-        Atre = P*(B**3)*(P**-1)
-        print Atre.diagonal()
-        #print A[0].todense()
-        """
-        
         print 'Calculating clustering coefficient'
         
-        """ new attempt """
+        # Calculating node degrees and clustering coefficients.
         C = []
-#        for q in range(n+3):
-#            AA = np.zeros(n+3)
-#            for w in range(n+3):
-#                "do the square - one column at a time"
-#                AA[w] = A[q].dot(A[w].T).todense()
-#            "do the cube - one diagonal element at a time"
-#            C.append((AA.dot(A[q].T.todense())).item(0))
-#            print '\rProgress of cubing:',(q+1),'/',(n+3),
-#            sys.stdout.flush()
-        AAA = A*A
-#        for ll in range(n+3):
-#            C.append((AAA[ll]*A[ll].T).todense())
-#            print '\rProgress of cubing:',(ll+1),'/',(n+3),
-#            sys.stdout.flush()
-
-        C = AAA*A
+        AAA = A*A               # Matrix multiplication split in two in order
+        C = AAA*A               # to save memory.
         C = C.diagonal()
 
-        k = A.sum(0)    # node degrees
-        if n == 1000000:
+        k = A.sum(0)            # Calculating node degrees.
+        if n == 1000000:        # Saving node degrees for the largest network.
             kk.append(k)
             print "yes"
         f = np.multiply(k,(k-1))
         W = C/f
-        WW = W.sum()/nodes
-
-#        for i in range(int(nodes)):
-#            C[i] = C[i]/(ki(i,A)*(ki(i,A)-1))
-#            print '\rProgress of clustering coefficient:',(i+1),'/',(n+3),
-#            sys.stdout.flush()
-#        CC.append((1/nodes)*sum(C))
-#        tc.append(CC)
+        WW = W.sum()/nodesi     # Total clustering coefficient for the network.
         tc.append(WW)
-#        print 'Done.'
     
     mins.append(np.min(tc))
     maxs.append(np.max(tc))
