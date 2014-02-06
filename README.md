@@ -11,7 +11,12 @@ After building a network the clustering coefficient is calculated, and the node
 degrees are saved for later analysis.
 
 
-Files:
+Files
 -----
 - cluster.py: Building of networks and various calculations.
 - plotter.py: Uses output from cluster.py to produce figures.
+
+Samples
+-------
+If the file plotter.py is run with the files in /sample/ as input it will
+produce nice figures for a run of 100 realisations.
