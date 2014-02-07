@@ -10,7 +10,7 @@ from scipy.sparse.linalg import eigsh
 # This script calculates clustering coefficients for very large networks.
 # With n # = 1e6 it uses about 11.5 GB RAM. On one core 3.4 GHz it takes about
 # 1.5 hours to complete with 100 realisations and 1e6 nodes. It also saves
-# average node degrees for each network averaged over all runs.
+# average node degrees for the largest network averaged over all runs.
 
 runs = 100   # Number of realizations
 
