@@ -50,7 +50,7 @@ mins = []
 maxs = []
 means = []
 kk = []
-for n in [10,100,1000,10000,100000,1000000]:
+for n in [10,100,1000,10000,100000,1000000]: # network sizes
     tc = []
     print 'Building network with',n,'nodes.'
     for k in range(runs):
