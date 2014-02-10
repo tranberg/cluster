@@ -1,15 +1,19 @@
 This script calculates the clustering coefficient and degree distributions for a
-particular kind of network growth.
+particular kind of random network growth.
 
-It is a work in progress. Not at all finished yet.
+It is a work in progress. Not quite finished yet.
 
-The growth process:
-Given an initial network. Pick a link at random and attach a new node to the two
-nodes attached to the picked link.
+The growth process
+------------------
+Given an initial network a link is picked at random and a new node is attached to the two
+nodes connected by the picked link.
 
-After building a network the clustering coefficient is calculated, and the node
-degrees are saved for later analysis.
+After building a network the clustering coefficient and average node degrees are
+calculated for later analysis.
 
+Network sizes range from 10 to 1e6 nodes and can easily be changed. Because of the large
+network size it requires about 12 GB of ram and about a minute on a 3.4 GHz CPU per
+realisation of a 1e6 node network.
 
 Files
 -----
@@ -18,5 +22,5 @@ Files
 
 Samples
 -------
-If the file plotter.py is run with the files in /sample/ as input it will
+If the file plotter.py is run with the files in sample/ as input it will
 produce nice figures for a run of 100 realisations.
