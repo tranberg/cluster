@@ -19,6 +19,7 @@ Files
 -----
 - cluster.py: Building of networks and various calculations.
 - plotter.py: Uses output from cluster.py to produce figures.
+- mp_cluster.py: Multiprocessing approach to solving very large networks.
 
 Samples
 -------
