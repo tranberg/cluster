@@ -88,7 +88,7 @@ for n in [10,100,1000,10000,100000,1000000]: # network sizes
             print "yes"
         f = np.multiply(k,(k-1))
         W = C/f
-        WW = W.sum()/nodesi     # Total clustering coefficient for the network.
+        WW = W.sum()/nodes      # Total clustering coefficient for the network.
         tc.append(WW)
     
     mins.append(np.min(tc))
