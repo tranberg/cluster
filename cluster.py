@@ -3,6 +3,7 @@ import numpy as np
 from random import randint
 import matplotlib.pyplot as plt
 from scipy.sparse import csr_matrix, dia_matrix
+from routines import *  # see routines.py
 
 # This script calculates clustering coefficients for very large networks.
 # With n = 1e6 it uses about 11.5 GB RAM. On one core 3.4 GHz it takes about
@@ -10,38 +11,6 @@ from scipy.sparse import csr_matrix, dia_matrix
 # average node degrees for the largest network averaged over all runs.
 
 runs = 100   # Number of realizations
-
-# Some useful functions
-def where(n):
-    return np.ones(len(n))
-
-def pick(a):
-    return randint(0,len(a)-1)
-
-def add(row,col,n):
-    """
-    Adding n nodes to the network and updating the sparse adjacency matrix.
-    """
-    if n==0:
-        return row,col
-    for i in range(n):
-        l = (len(col)-3)/2+3
-        index = pick(row)
-        r = row[index]
-        c = col[index]
-        col.append(l)
-        col.append(l)
-        row.append(r)
-        row.append(c)
-    return row,col
-
-def ki(i,M):
-    """
-    Calculate the node degree of a single node from the adjacency matrix in
-    sparse format
-    """
-    return M.sum(0)[0,i]
-
 
 # Here we build a network, calculate the clustering coefficients and the node
 # degrees. This is repeated "runs" times for each of the network sizes specified
