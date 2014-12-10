@@ -1,5 +1,7 @@
 from __future__ import division
+import sys
 import numpy as np
+from time import time
 from random import randint
 import matplotlib.pyplot as plt
 from scipy.sparse import csr_matrix, dia_matrix
@@ -10,59 +12,74 @@ from routines import *  # see routines.py
 # 1.5 hours to complete with 100 realisations and 1e6 nodes. It also saves
 # average node degrees for the largest network averaged over all runs.
 
-runs = 100   # Number of realizations
+runs = 1000   # Number of realizations
 
 # Here we build a network, calculate the clustering coefficients and the node
 # degrees. This is repeated "runs" times for each of the network sizes specified
 # in the outer loop.
+start = time()
 mins = []
 maxs = []
 means = []
 kk = []
-for n in [10,100,1000,10000,100000,1000000]: # network sizes
-    tc = []
-    print 'Building network with',n,'nodes.'
-    for k in range(runs):
-        print 'Run',k+1,'of',str(runs)
-        
-        # Initial network
-        irow = [0,0,1]
-        icol = [1,2,2]
+TTC = []
+last = False
+lastRun = False
+for N in [10,100,1000,10000,100000]: # network sizes
+    if N < 100000:
+        top = N*10
+    else:
+        top = N*10+3*N
+        last = True
 
-        # Adding nodes
-        row,col,data=[],[],[]
-        row,col = add(irow,icol,n)
-        data = where(row)
-
-        # Building the complete adjacency matrix
-        j = int(2*(n+2)-1)
-        nodes = 3+(j-3)/2
-        tdata = np.concatenate((data[:j],data[:j]))
-        trow = np.concatenate((row[:j],col[:j]))
-        tcol = np.concatenate((col[:j],row[:j]))
-        A = csr_matrix((tdata,([trow,tcol])))
-        
-        print 'Done building A'
-        print 'Calculating clustering coefficient'
-        
-        # Calculating node degrees and clustering coefficients.
-        C = []
-        AAA = A*A               # Matrix multiplication split in two in order
-        C = AAA*A               # to save memory.
-        C = C.diagonal()
-
-        k = A.sum(0)            # Calculating node degrees.
-        if n == 1000000:        # Saving node degrees for the largest network.
-            kk.append(k)
-            print "yes"
-        f = np.multiply(k,(k-1))
-        W = C/f
-        WW = W.sum()/nodes      # Total clustering coefficient for the network.
-        tc.append(WW)
+    for n in range(N,top,N):
+        if last:
+            if n == top-N:
+                lastRun = True
+        tc = []
+        if n == 10: line = ''
+        else: line = '\n'
+        print line+'Building network with',n,'nodes.'
+        for k in range(runs):
+            print "\r",'Run',k+1,'of',str(runs),
+            sys.stdout.flush()
     
-    mins.append(np.min(tc))
-    maxs.append(np.max(tc))
-    means.append(np.mean(tc))
+            # Initial network
+            irow = [0,0,1]
+            icol = [1,2,2]
+    
+            # Adding nodes
+            row,col,data=[],[],[]
+            row,col = add(irow,icol,n)
+            data = where(row)
+    
+            # Building the complete adjacency matrix
+            j = int(2*(n+2)-1)
+            nodes = 3+(j-3)/2
+            tdata = np.concatenate((data[:j],data[:j]))
+            trow = np.concatenate((row[:j],col[:j]))
+            tcol = np.concatenate((col[:j],row[:j]))
+            A = csr_matrix((tdata,([trow,tcol])))
+            
+            # Calculating node degrees and clustering coefficients.
+            C = []
+            AAA = A*A               # Matrix multiplication split in two in order
+            C = AAA*A               # to save memory.
+            C = C.diagonal()
+    
+            k = A.sum(0)            # Calculating node degrees.
+            if lastRun:             # Saving node degrees for the largest network.
+                kk.append(k)
+            f = np.multiply(k,(k-1))
+            W = C/f
+            WW = W.sum()/nodes      # Total clustering coefficient for the network.
+            tc.append(WW)
+        
+        mins.append(np.min(tc))
+        maxs.append(np.max(tc))
+        means.append(np.mean(tc))
+    
+        TTC.append(tc)
 
 mins = np.abs(np.subtract(mins,means))
 maxs = np.subtract(maxs,means)
@@ -79,3 +96,6 @@ k = np.mean(H,0)
 # Save data to file for later plotting.
 np.savetxt('such_result_'+str(runs)+'_realisations',[mins,maxs,means])
 np.savez('avk',k=k)
+np.save('TTC.npy',TTC)
+print "Done!"
+print "Calculations took "+str((time()-start)/3600)+" hours."
