@@ -94,7 +94,7 @@ for i in range(len(kk)):
 k = np.mean(H,0)
 
 # Save data to file for later plotting.
-np.savetxt('such_result_'+str(runs)+'_realisations',[mins,maxs,means])
+np.savetxt('results_'+str(runs)+'_realisations',[mins,maxs,means])
 np.savez('avk',k=k)
 np.save('TTC.npy',TTC)
 print "Done!"
