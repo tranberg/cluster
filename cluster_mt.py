@@ -69,9 +69,9 @@ for N in [10,100,1000,10000,100000]: # network sizes
             #C = AAA*A               # to save memory.
             #C = C.diagonal()
             
-            # Since (A**3).diagonal() == (A.diagonal())**3 do the latter (it's faster)
-            C = (A.diagonal())**3 
-    
+            # Use csc_matrix.multiply instead (could go to matrices of size 30.000.000x30.000.000)
+            C = csc_matrix.multiply(A, csc_matrix.multiply(A,A) )
+            C = C.diagonal()
     
             k = A.sum(0)            # Calculating node degrees.
             if lastRun:             # Saving node degrees for the largest network.
