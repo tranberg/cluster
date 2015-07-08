@@ -22,8 +22,3 @@ Files
 - scatterplotter.py: Uses output from cluster.py to produce nice figures.
 - cluster_mp.py: Multiprocessing approach to solving very large networks. Using 4 cores it is about 36 times slower than the direct approach in cluster.py.
 - cluster_mt: Marcus' attempt.
-
-Samples
--------
-If the file plotter.py is run with the files in sample/ as input it will
-produce nice figures for a run of 100 realisations.
