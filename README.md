@@ -19,7 +19,9 @@ Files
 -----
 - cluster.py: Building of networks and various calculations.
 - plotter.py: Uses output from cluster.py to produce figures.
-- mp_cluster.py: Multiprocessing approach to solving very large networks.
+- scatterplotter.py: Uses output from cluster.py to produce nice figures.
+- cluster_mp.py: Multiprocessing approach to solving very large networks. Using 4 cores it is about 36 times slower than the direct approach in cluster.py.
+- cluster_mt: Marcus' attempt.
 
 Samples
 -------
