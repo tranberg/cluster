@@ -10,9 +10,10 @@ def func(x, a, b):
 def ys(x):
     return 1e7 * x ** -3
 
-# Loading some data
-data = np.loadtxt('results_1000_realisations')
-k = np.load('avk.npz')['k']
+# Loading data
+runs = 1000
+data = np.loadtxt('results_' + str(runs) + '_realisations')
+k = np.load('avk_' + str(runs) + '.npz')['k']
 print k.shape
 mins = data[0]
 maxs = data[1]
@@ -44,10 +45,8 @@ ax.annotate(r'C = ' + str("%.5f" % means[-1]) + ' (' + str("%.5f" % mins[-1]) + 
 # Polynomial fitting to the averaged degree distribution
 top = len(k)
 bins = np.linspace(1, top, top)
-
 xdata = bins
 ydata = k
-
 opt, cov = optimize.curve_fit(func, xdata[20:500], ydata[20:500], p0=[1e7, -3])
 a = opt[0]
 b = opt[1]

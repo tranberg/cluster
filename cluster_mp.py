@@ -106,7 +106,7 @@ k = np.mean(H, 0)
 
 # Save data to file for later plotting.
 np.savetxt('results_' + str(runs) + '_realisations', [mins, maxs, means])
-np.savez('avk', k=k)
+np.savez('avk_' + str(runs), k=k)
 np.save('TTC' + str(runs) + '.npy', TTC)
 print "Done!"
 print "Calculations took " + str((time() - start) / 3600) + " hours."
